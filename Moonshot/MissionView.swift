@@ -28,48 +28,23 @@ struct MissionView: View {
                     }
                     .padding(.top)
                 VStack(alignment: .leading){
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundStyle(.lightBackground)
-                        .padding()
+                    CustomSeparator()
                     Text("Mission Highlights")
                         .font(.title.bold())
                         .padding(.bottom, 5)
                     
-                    Text(mission.description)
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundStyle(.lightBackground)
+                    Text("\(mission.launchDate?.formatted(date: .complete, time: .omitted) ?? "")")
+                        .foregroundStyle(.gray)
                         .padding(.bottom, 5)
+                    
+                    Text(mission.description)
+                    CustomSeparator()
                     Text("Crew")
                         .font(.title)
                 }
                 .padding(.horizontal)
                 ScrollView(.horizontal, showsIndicators: false){
-                    HStack{
-                        ForEach(crew, id: \.role){ crewMember in
-                            NavigationLink{
-                                AstronautView(astronaut: crewMember.astronaut)
-                            } label: {
-                                Image(crewMember.astronaut.id)
-                                    .resizable()
-                                    .frame(width: 104, height: 72)
-                                    .clipShape(.capsule)
-                                    .overlay(
-                                        Capsule()
-                                            .stroke(lineWidth: 1)
-                                            .foregroundStyle(.white)
-                                    )
-                                VStack(alignment: .leading){
-                                    Text(crewMember.astronaut.name)
-                                        .font(.headline)
-                                        .foregroundStyle(.white)
-                                    Text(crewMember.role)
-                                        .foregroundStyle(.white.opacity(0.5))
-                                }
-                            }
-                        }
-                    }
+                  CrewView(crew: crew)
                 }
             }
             .padding(.bottom)
@@ -90,6 +65,45 @@ struct MissionView: View {
                 fatalError("unbale to find \(member.name) in astronaut json")
             }
         }
+    }
+}
+
+struct CrewView: View {
+    var crew: [MissionView.CrewMember]
+    var body: some View {
+        HStack{
+            ForEach(crew, id: \.role){ crewMember in
+                NavigationLink{
+                    AstronautView(astronaut: crewMember.astronaut)
+                } label: {
+                    Image(crewMember.astronaut.id)
+                        .resizable()
+                        .frame(width: 104, height: 72)
+                        .clipShape(.capsule)
+                        .overlay(
+                            Capsule()
+                                .stroke(lineWidth: 1)
+                                .foregroundStyle(.white)
+                        )
+                    VStack(alignment: .leading){
+                        Text(crewMember.astronaut.name)
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                        Text(crewMember.role)
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CustomSeparator: View {
+    var body: some View {
+        Rectangle()
+            .frame(height: 2)
+            .foregroundStyle(.lightBackground)
+            .padding(.bottom, 5)
     }
 }
 
